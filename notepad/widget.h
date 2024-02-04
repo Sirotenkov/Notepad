@@ -15,6 +15,13 @@ public:
     Widget(QWidget *parent = nullptr);
     ~Widget();
 
+private slots:
+    void openFile();
+    void saveFile();
+    void changeSizeText(QString const& text);
+    void copyText();
+    void pasteText();
+
 private:
     QFile File_;
     QPushButton* openBut_;
