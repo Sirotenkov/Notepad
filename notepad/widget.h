@@ -23,7 +23,7 @@ private slots:
     void pasteText();
 
 private:
-    QFile File_;
+    QFile file_;
     QPushButton* openBut_;
     QPushButton* saveBut_;
     QPushButton* copyBut_;

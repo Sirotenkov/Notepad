@@ -33,7 +33,7 @@ Widget::Widget(QWidget *parent)
     fontSizeCombo_ = new QComboBox(this);
     fontSizeCombo_->insertItems(0, {"8", "9", "10", "11", "12", "14", "16", "18"});
     fontSizeCombo_->setToolTip("Размер шрифта");
-    connect(fontSizeCombo_, &QComboBox::currentIndexChanged, this, &Widget::changeSizeText);
+    connect(fontSizeCombo_, &QComboBox::currentTextChanged, this, &Widget::changeSizeText);
 
     textEdit_ = new QTextEdit(this);
 
@@ -55,30 +55,52 @@ Widget::Widget(QWidget *parent)
 
 Widget::~Widget()
 {
-
+    file_.close();
 }
 
-void openFile()
+void Widget::openFile()
+{
+    if (file_.isOpen()) file_.close();
+
+    QString const fileName = QFileDialog::getOpenFileName(this, "Открыть текстовый файл", "c:/", "Текстовые файлы (*.txt)");
+
+    if (fileName.isEmpty()) return;
+
+    file_.setFileName(fileName);
+    if (!file_.open(QFile::ReadWrite)) return;
+
+    QTextStream ts(&file_);
+    auto const text = ts.readAll();
+
+    textEdit_->setText(text);
+}
+
+void Widget::saveFile()
+{
+    if (!file_.isOpen()) return;
+    file_.resize(0);
+
+    QTextStream ts(&file_);
+    ts << textEdit_->toPlainText();
+}
+
+void Widget::changeSizeText(QString const& text)
+{
+    bool success = false;
+    auto const size = text.toInt(&success);
+    if (!success) return;
+
+    auto font = textEdit_->font();
+    font.setPointSize(size);
+    textEdit_->setFont(font);
+}
+
+void Widget::copyText()
 {
 
 }
 
-void saveFile()
-{
-
-}
-
-void changeSizeText(QString const& text)
-{
-
-}
-
-void copyText()
-{
-
-}
-
-void pasteText()
+void Widget::pasteText()
 {
 
 }
